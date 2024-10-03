@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.loja_uniformes.admin.domain.enums.CompanyCategoryEnum;
 import com.loja_uniformes.admin.domain.valueobject.PhoneVo;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -19,6 +21,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(name = "tb_company")
+@AllArgsConstructor
+@NoArgsConstructor
 public class CompanyEntity implements Serializable {
 
     @Serial
@@ -26,7 +30,7 @@ public class CompanyEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
 
     @Column(name = "name", nullable = false, unique = true)
@@ -43,7 +47,7 @@ public class CompanyEntity implements Serializable {
     @CollectionTable(name = "tb_company_phones", joinColumns = @JoinColumn(name = "company_id"))
     private Set<PhoneVo> phones = new HashSet<>();
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     private Instant createdAt;
 
     @Column(name = "updated_at")
@@ -51,7 +55,7 @@ public class CompanyEntity implements Serializable {
 
     @Column(name = "deleted")
     @ColumnDefault("false")
-    private Boolean deleted;
+    private Boolean deleted = false;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)

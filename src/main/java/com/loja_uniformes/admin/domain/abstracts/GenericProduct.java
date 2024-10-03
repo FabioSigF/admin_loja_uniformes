@@ -34,9 +34,9 @@ public abstract class GenericProduct {
 
     @Column(name = "available", nullable = false)
     @ColumnDefault("true")
-    private Boolean available;
+    private Boolean available = true;
 
     @Column(name = "deleted", nullable = false)
     @ColumnDefault("false")
-    private Boolean deleted;
+    private Boolean deleted = false;
 }

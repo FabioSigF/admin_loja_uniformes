@@ -2,11 +2,10 @@ package com.loja_uniformes.admin.domain.entity.postgres;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.loja_uniformes.admin.domain.abstracts.GenericProduct;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serial;
@@ -18,11 +17,13 @@ import java.util.Set;
 @Getter
 @Setter
 @Table(name="tb_product")
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductEntity extends GenericProduct implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ProductFeatureEntity> productFeatures = new HashSet<>();
 }

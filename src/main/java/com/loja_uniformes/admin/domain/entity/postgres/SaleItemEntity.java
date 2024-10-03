@@ -1,7 +1,9 @@
 package com.loja_uniformes.admin.domain.entity.postgres;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.UUID;
@@ -10,6 +12,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(name = "tb_sale_item")
+@AllArgsConstructor
+@NoArgsConstructor
 public class SaleItemEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

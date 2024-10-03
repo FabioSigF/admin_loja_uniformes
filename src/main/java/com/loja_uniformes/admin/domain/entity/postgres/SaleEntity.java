@@ -3,7 +3,9 @@ package com.loja_uniformes.admin.domain.entity.postgres;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.loja_uniformes.admin.domain.valueobject.PhoneVo;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -18,6 +20,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(name = "tb_sale")
+@AllArgsConstructor
+@NoArgsConstructor
 public class SaleEntity implements Serializable {
 
     @Serial
@@ -35,7 +39,7 @@ public class SaleEntity implements Serializable {
 
     @Column(name = "deleted", nullable = false)
     @ColumnDefault("false")
-    private Boolean deleted;
+    private Boolean deleted = false;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(fetch = FetchType.LAZY)

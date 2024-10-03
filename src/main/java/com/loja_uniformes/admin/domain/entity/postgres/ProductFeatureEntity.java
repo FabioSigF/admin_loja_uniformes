@@ -1,7 +1,9 @@
 package com.loja_uniformes.admin.domain.entity.postgres;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -13,9 +15,12 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(name="tb_product_feature")
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductFeatureEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
 
     @Column(name = "color", nullable = false)
@@ -25,20 +30,21 @@ public class ProductFeatureEntity implements Serializable {
     private String size;
 
     @Column(name = "price", nullable = false)
-    private String price;
+
+    private Double price;
 
     @Column(name = "stock_quantity", nullable = false)
     private int stockQuantity;
 
     @Column(name = "available")
     @ColumnDefault("true")
-    private boolean available;
+    private Boolean available = true;
 
     @Column(name = "deleted")
     @ColumnDefault("false")
-    private Boolean deleted;
+    private Boolean deleted = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_id", nullable = false)
     private ProductEntity product;
 }
