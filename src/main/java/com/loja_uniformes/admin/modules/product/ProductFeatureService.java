@@ -30,7 +30,7 @@ public class ProductFeatureService {
     public ProductFeatureEntity saveProductFeature(ProductFeatureDto productFeatureDto) {
         ProductFeatureEntity productFeature = new ProductFeatureEntity();
 
-        ProductEntity product = productRepository.findById(productFeatureDto.productId())
+        ProductEntity product = productRepository.findOneByIdAndDeletedFalse(productFeatureDto.productId())
                 .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado."));
 
         // Valida se a característica do produto já existe

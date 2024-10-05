@@ -2,6 +2,7 @@ package com.loja_uniformes.admin.repositories;
 
 import com.loja_uniformes.admin.domain.entity.postgres.ProductFeatureEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,4 +12,6 @@ public interface ProductFeatureRepository extends JpaRepository<ProductFeatureEn
     Optional<List<ProductFeatureEntity>> findAllProductFeatureEntitiesByProductIdAndDeletedFalse(UUID id);
 
     Optional<ProductFeatureEntity> findOneByProductIdAndSizeAndColorAndDeletedFalse(UUID product_id, String size, String color);
+
+    Optional<ProductFeatureEntity> findOneByIdAndDeletedFalse(UUID id);
 }
