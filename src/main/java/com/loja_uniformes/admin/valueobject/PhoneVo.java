@@ -1,4 +1,4 @@
-package com.loja_uniformes.admin.domain.valueobject;
+package com.loja_uniformes.admin.valueobject;
 
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;

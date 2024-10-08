@@ -1,9 +1,13 @@
 package com.loja_uniformes.admin.modules.company;
 
-import com.loja_uniformes.admin.domain.dto.CompanyDto;
-import com.loja_uniformes.admin.domain.entity.postgres.CompanyEntity;
-import com.loja_uniformes.admin.domain.entity.postgres.ProductEntity;
-import com.loja_uniformes.admin.domain.enums.CompanyCategoryEnum;
+import com.loja_uniformes.admin.domain.company.dtos.request.CompanyRequestDto;
+import com.loja_uniformes.admin.domain.company.CompanyEntity;
+import com.loja_uniformes.admin.domain.company.dtos.response.CompanyResponseDto;
+import com.loja_uniformes.admin.domain.product.ProductEntity;
+import com.loja_uniformes.admin.domain.company.enums.CompanyCategoryEnum;
+import com.loja_uniformes.admin.domain.sale.SaleEntity;
+import com.loja_uniformes.admin.domain.sale.dtos.response.SaleItemResponseDto;
+import com.loja_uniformes.admin.domain.sale.dtos.response.SaleResponseDto;
 import com.loja_uniformes.admin.exceptions.EntityNotFoundException;
 import com.loja_uniformes.admin.modules.product.ProductService;
 import com.loja_uniformes.admin.repositories.CompanyRepository;
@@ -17,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class CompanyService {
@@ -33,29 +38,33 @@ public class CompanyService {
 
     // GET METHODS
 
-    public CompanyEntity getCompanyById(UUID id) {
-        return companyRepository.findOneByIdAndDeletedFalse(id).
+    public CompanyResponseDto getCompanyById(UUID id) {
+        CompanyEntity company = companyRepository.findOneByIdAndDeletedFalse(id).
                 orElseThrow(() -> new EntityNotFoundException("Nenhuma empresa encontrada com o id fornecido."));
+        return toCompanyResponseDto(company);
     }
 
-    public List<CompanyEntity> getAllCompanies() {
-        return companyRepository.findAllByDeletedFalse()
+    public List<CompanyResponseDto> getAllCompanies() {
+        List<CompanyEntity> companies = companyRepository.findAllByDeletedFalse()
                 .orElseThrow(() -> new EntityNotFoundException("Nenhuma empresa encontrada."));
+        return companies.stream().map(this::toCompanyResponseDto).toList();
     }
 
-    public List<CompanyEntity> getAllCompaniesByName(String name) {
-        return companyRepository.findAllByNameContainingIgnoreCaseAndDeletedFalse(name)
+    public List<CompanyResponseDto> getAllCompaniesByName(String name) {
+        List<CompanyEntity> companies = companyRepository.findAllByNameContainingIgnoreCaseAndDeletedFalse(name)
                 .orElseThrow(() -> new EntityNotFoundException("Nenhuma empresa encontrada com o nome fornecido."));
+        return companies.stream().map(this::toCompanyResponseDto).toList();
     }
 
-    public List<CompanyEntity> getAllCompaniesByCategory(CompanyCategoryEnum category) {
-        return companyRepository.findAllByCategoryAndDeletedFalse(category)
+    public List<CompanyResponseDto> getAllCompaniesByCategory(CompanyCategoryEnum category) {
+        List<CompanyEntity> companies = companyRepository.findAllByCategoryAndDeletedFalse(category)
                 .orElseThrow(() -> new EntityNotFoundException("Nenhuma empresa encontrada na categoria " + category.getDescription() + "."));
+        return companies.stream().map(this::toCompanyResponseDto).toList();
     }
 
     // POST METHODS
     @Transactional
-    public CompanyEntity saveCompany(CompanyDto companyDto) {
+    public CompanyEntity saveCompany(CompanyRequestDto companyDto) {
         CompanyEntity company = new CompanyEntity();
 
         // Valida se já existe empresa com o mesmo nome
@@ -106,4 +115,17 @@ public class CompanyService {
         companyRepository.save(company);
     }
 
+    //CONVERT METHODS
+
+    public CompanyResponseDto toCompanyResponseDto(CompanyEntity company) {
+        return new CompanyResponseDto(
+                company.getId(),
+                company.getName(),
+                company.getCnpj(),
+                company.getCategory(),
+                company.getPhones(),
+                company.getCreatedAt(),
+                company.getUpdatedAt()
+        );
+    }
 }

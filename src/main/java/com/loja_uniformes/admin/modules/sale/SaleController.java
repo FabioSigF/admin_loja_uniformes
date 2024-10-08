@@ -1,8 +1,9 @@
 package com.loja_uniformes.admin.modules.sale;
 
-import com.loja_uniformes.admin.domain.dto.SaleDto;
-import com.loja_uniformes.admin.domain.entity.postgres.SaleEntity;
-import com.loja_uniformes.admin.domain.enums.CompanyCategoryEnum;
+import com.loja_uniformes.admin.domain.sale.dtos.request.SaleRequestDto;
+import com.loja_uniformes.admin.domain.sale.SaleEntity;
+import com.loja_uniformes.admin.domain.company.enums.CompanyCategoryEnum;
+import com.loja_uniformes.admin.domain.sale.dtos.response.SaleResponseDto;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,54 +24,59 @@ public class SaleController {
     }
 
     @PostMapping
-    public ResponseEntity<SaleEntity> saveSale(@RequestBody SaleDto saleDto) {
+    public ResponseEntity<SaleEntity> saveSale(@RequestBody SaleRequestDto saleDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(saleService.saveSale(saleDto));
     }
 
     @GetMapping
-    public ResponseEntity<List<SaleEntity>> getAllSales() {
+    public ResponseEntity<List<SaleResponseDto>> getAllSales() {
         return ResponseEntity.status(HttpStatus.OK).body(saleService.getAllSales());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SaleEntity> getSaleById(@PathVariable UUID id) {
+    public ResponseEntity<SaleResponseDto> getSaleById(@PathVariable UUID id) {
         return ResponseEntity.status(HttpStatus.OK).body(saleService.getSaleById(id));
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<SaleEntity>> getAllSalesByDateRange(
+    public ResponseEntity<List<SaleResponseDto>> getAllSalesByDateRange(
             @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         return ResponseEntity.status(HttpStatus.OK).body(saleService.getAllSalesByDateRange(startDate, endDate));
     }
 
     @GetMapping("/company/{id}")
-    public ResponseEntity<List<SaleEntity>> getAllSalesByCompanyId(@PathVariable UUID id) {
+    public ResponseEntity<List<SaleResponseDto>> getAllSalesByCompanyId(@PathVariable UUID id) {
         return ResponseEntity.status(HttpStatus.OK).body(saleService.getAllSalesByCompanyId(id));
     }
 
-    @GetMapping("/company/{id}/by-date-range")
-    public ResponseEntity<List<SaleEntity>> getAllSalesByCompanyIdAndDateRange(
+    @GetMapping("/company/{id}/by-date-range/")
+    public ResponseEntity<List<SaleResponseDto>> getAllSalesByCompanyIdAndDateRange(
             @PathVariable UUID id,
             @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         return ResponseEntity.status(HttpStatus.OK).body(saleService.getAllSalesByCompanyIdAndDateRange(id, startDate, endDate));
     }
 
-    @GetMapping("/company/{id}/by-date")
-    public ResponseEntity<List<SaleEntity>> getAllSalesByCompanyIdAndDate(
+    @GetMapping("/company/{id}/by-date/")
+    public ResponseEntity<List<SaleResponseDto>> getAllSalesByCompanyIdAndDate(
             @PathVariable UUID id,
             @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return ResponseEntity.status(HttpStatus.OK).body(saleService.getAllSalesByCompanyIdAndDate(id, date));
     }
 
     @GetMapping("/category/")
-    public ResponseEntity<List<SaleEntity>> getAllSalesByCompanyCategoryAndDateRange(
+    public ResponseEntity<List<SaleResponseDto>> getAllSalesByCompanyCategoryAndDateRange(
             @RequestParam("category") CompanyCategoryEnum category,
             @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         return ResponseEntity.status(HttpStatus.OK).body(saleService.getAllSalesByCompanyCategoryAndDateRange(category, startDate, endDate));
     }
 
+    @PatchMapping("/delete/{id}")
+    public ResponseEntity<String> deleteSale(@PathVariable UUID id) {
+        saleService.deleteSale(id);
+        return ResponseEntity.status(HttpStatus.OK).body("Venda deletada com sucesso.");
+    }
 
 }

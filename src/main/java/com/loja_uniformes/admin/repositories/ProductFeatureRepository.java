@@ -1,8 +1,7 @@
 package com.loja_uniformes.admin.repositories;
 
-import com.loja_uniformes.admin.domain.entity.postgres.ProductFeatureEntity;
+import com.loja_uniformes.admin.domain.product.ProductFeatureEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,7 +1,8 @@
 package com.loja_uniformes.admin.repositories;
 
-import com.loja_uniformes.admin.domain.entity.postgres.CompanyEntity;
-import com.loja_uniformes.admin.domain.enums.CompanyCategoryEnum;
+import com.loja_uniformes.admin.domain.company.CompanyEntity;
+import com.loja_uniformes.admin.domain.company.dtos.response.CompanyResponseDto;
+import com.loja_uniformes.admin.domain.company.enums.CompanyCategoryEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

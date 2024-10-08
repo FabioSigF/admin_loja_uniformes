@@ -1,8 +1,10 @@
-package com.loja_uniformes.admin.domain.entity.postgres;
+package com.loja_uniformes.admin.domain.company;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.loja_uniformes.admin.domain.enums.CompanyCategoryEnum;
-import com.loja_uniformes.admin.domain.valueobject.PhoneVo;
+import com.loja_uniformes.admin.domain.company.enums.CompanyCategoryEnum;
+import com.loja_uniformes.admin.domain.product.ProductEntity;
+import com.loja_uniformes.admin.domain.sale.SaleEntity;
+import com.loja_uniformes.admin.valueobject.PhoneVo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

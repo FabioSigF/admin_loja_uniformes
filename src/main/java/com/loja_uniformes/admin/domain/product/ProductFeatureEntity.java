@@ -1,4 +1,4 @@
-package com.loja_uniformes.admin.domain.entity.postgres;
+package com.loja_uniformes.admin.domain.product;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,6 @@ import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.io.Serializable;
-import java.time.Instant;
 import java.util.UUID;
 
 @Entity

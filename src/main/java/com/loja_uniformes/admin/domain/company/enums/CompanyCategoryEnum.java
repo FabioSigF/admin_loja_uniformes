@@ -1,4 +1,4 @@
-package com.loja_uniformes.admin.domain.enums;
+package com.loja_uniformes.admin.domain.company.enums;
 
 import lombok.Getter;
 

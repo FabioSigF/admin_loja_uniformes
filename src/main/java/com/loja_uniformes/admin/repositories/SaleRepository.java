@@ -1,11 +1,10 @@
 package com.loja_uniformes.admin.repositories;
 
-import com.loja_uniformes.admin.domain.entity.postgres.SaleEntity;
-import com.loja_uniformes.admin.domain.enums.CompanyCategoryEnum;
+import com.loja_uniformes.admin.domain.sale.SaleEntity;
+import com.loja_uniformes.admin.domain.company.enums.CompanyCategoryEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.time.LocalDate;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -13,15 +12,13 @@ import java.util.UUID;
 public interface SaleRepository extends JpaRepository<SaleEntity, UUID> {
     Optional<List<SaleEntity>> findAllByDeletedFalse();
 
-    Optional<List<SaleEntity>> findAllByCreatedAtBetweenAndDeletedFalse(LocalDate startDate, LocalDate endDate);
+    Optional<List<SaleEntity>> findAllByCreatedAtBetweenAndDeletedFalse(Instant startDate, Instant endDate);
 
     Optional<List<SaleEntity>> findAllByCompanyIdAndDeletedFalse(UUID companyId);
 
-    Optional<List<SaleEntity>> findAllByCompanyIdAndCreatedAtBetweenAndDeletedFalse(UUID companyId, LocalDate startDate, LocalDate endDate);
-
-    Optional<List<SaleEntity>> findAllByCompanyIdAndCreatedAtAndDeletedFalse(UUID companyId, LocalDate createdAt);
+    Optional<List<SaleEntity>> findAllByCompanyIdAndCreatedAtBetweenAndDeletedFalse(UUID companyId, Instant startDate, Instant endDate);
 
     Optional<SaleEntity> findOneByIdAndDeletedFalse(UUID id);
 
-    Optional<List<SaleEntity>> findAllByCompanyCategoryAndCreatedAtBetweenAndDeletedFalse(CompanyCategoryEnum category, LocalDate startDate, LocalDate endDate);
+    Optional<List<SaleEntity>> findAllByCompanyCategoryAndCreatedAtBetweenAndDeletedFalse(CompanyCategoryEnum category, Instant startDate, Instant endDate);
 }

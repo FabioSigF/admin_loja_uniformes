@@ -1,7 +1,7 @@
-package com.loja_uniformes.admin.domain.entity.postgres;
+package com.loja_uniformes.admin.domain.sale;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.loja_uniformes.admin.domain.valueobject.PhoneVo;
+import com.loja_uniformes.admin.domain.company.CompanyEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

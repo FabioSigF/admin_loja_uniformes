@@ -1,10 +1,14 @@
 package com.loja_uniformes.admin.modules.product;
 
-import com.loja_uniformes.admin.domain.dto.ProductDto;
-import com.loja_uniformes.admin.domain.dto.ProductFeatureDto;
-import com.loja_uniformes.admin.domain.entity.postgres.CompanyEntity;
-import com.loja_uniformes.admin.domain.entity.postgres.ProductEntity;
-import com.loja_uniformes.admin.domain.entity.postgres.ProductFeatureEntity;
+import com.loja_uniformes.admin.domain.company.dtos.response.CompanyResponseDto;
+import com.loja_uniformes.admin.domain.product.dtos.request.ProductRequestDto;
+import com.loja_uniformes.admin.domain.product.dtos.request.ProductFeatureRequestDto;
+import com.loja_uniformes.admin.domain.company.CompanyEntity;
+import com.loja_uniformes.admin.domain.product.ProductEntity;
+import com.loja_uniformes.admin.domain.product.ProductFeatureEntity;
+import com.loja_uniformes.admin.domain.product.dtos.response.ProductFeatureResponseDto;
+import com.loja_uniformes.admin.domain.product.dtos.response.ProductResponseDto;
+import com.loja_uniformes.admin.domain.sale.dtos.response.SaleItemResponseDto;
 import com.loja_uniformes.admin.exceptions.EntityNotFoundException;
 import com.loja_uniformes.admin.repositories.CompanyRepository;
 import com.loja_uniformes.admin.repositories.ProductFeatureRepository;
@@ -15,7 +19,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -25,7 +31,6 @@ public class ProductService {
     private final ProductFeatureRepository productFeatureRepository;
     private final ProductFeatureService productFeatureService;
 
-    @Autowired
     public ProductService(ProductRepository productRepository, ProductFeatureRepository productFeatureRepository, CompanyRepository companyRepository, ProductFeatureRepository productFeatureRepository1, ProductFeatureService productFeatureService) {
         this.productRepository = productRepository;
         this.companyRepository = companyRepository;
@@ -34,10 +39,30 @@ public class ProductService {
     }
 
     // GET METHODS
+    public ProductResponseDto getProductById(UUID id) {
+        ProductEntity product = productRepository.findOneByIdAndDeletedFalse(id)
+                .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado."));
+
+        return toProductResponseDto(product);
+    }
+
+    public List<ProductResponseDto> getAllProductsByCompanyId(UUID id) {
+        List<ProductEntity> products = productRepository.findAllByCompanyIdAndDeletedFalse(id)
+                .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado."));
+
+        return products.stream().map(this::toProductResponseDto).toList();
+    }
+
+    public List<ProductResponseDto> getAllProductsByCompanyIdAndName(UUID companyId, String name) {
+        List<ProductEntity> products = productRepository.findAllByCompanyIdAndNameContainingIgnoreCaseAndDeletedFalse(companyId, name)
+                .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado;"));
+
+        return products.stream().map(this::toProductResponseDto).toList();
+    }
 
     // POST METHODS
     @Transactional
-    public ProductEntity saveProduct(ProductDto productDto) {
+    public ProductEntity saveProduct(ProductRequestDto productDto) {
 
         // Validação explícita do companyId
         if (productDto.companyId() == null) {
@@ -65,7 +90,7 @@ public class ProductService {
         // Adicionando características do produto
         if (productDto.features() != null && !productDto.features().isEmpty()) {
             productDto.features().forEach(feature -> {
-                ProductFeatureDto featureDto = new ProductFeatureDto(
+                ProductFeatureRequestDto featureDto = new ProductFeatureRequestDto(
                         feature.getColor(),
                         feature.getSize(),
                         feature.getPrice(),
@@ -106,5 +131,21 @@ public class ProductService {
         productFeatures.forEach(productFeature -> productFeatureService.deleteProductFeature(productFeature.getId()));
 
         productRepository.save(product);
+    }
+
+    // CONVERT METHOD
+    public ProductResponseDto toProductResponseDto(ProductEntity product) {
+
+        Set<ProductFeatureResponseDto> productFeatures = product.getProductFeatures().stream()
+                .map(productFeatureService::toProductFeatureResponseDto).collect(Collectors.toSet());
+
+        return new ProductResponseDto(
+                product.getId(),
+                product.getCompany().getId(),
+                product.getName(),
+                product.getDescription(),
+                product.getGender(),
+                productFeatures
+        );
     }
 }

@@ -1,7 +1,7 @@
-package com.loja_uniformes.admin.domain.abstracts;
+package com.loja_uniformes.admin.domain.product.abstracts;
 
-import com.loja_uniformes.admin.domain.entity.postgres.CompanyEntity;
-import com.loja_uniformes.admin.domain.enums.ProductGenderEnum;
+import com.loja_uniformes.admin.domain.company.CompanyEntity;
+import com.loja_uniformes.admin.domain.product.enums.ProductGenderEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

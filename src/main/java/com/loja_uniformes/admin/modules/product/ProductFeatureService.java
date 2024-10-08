@@ -1,9 +1,9 @@
 package com.loja_uniformes.admin.modules.product;
 
-import com.loja_uniformes.admin.domain.dto.ProductFeatureDto;
-import com.loja_uniformes.admin.domain.entity.postgres.CompanyEntity;
-import com.loja_uniformes.admin.domain.entity.postgres.ProductEntity;
-import com.loja_uniformes.admin.domain.entity.postgres.ProductFeatureEntity;
+import com.loja_uniformes.admin.domain.product.dtos.request.ProductFeatureRequestDto;
+import com.loja_uniformes.admin.domain.product.ProductEntity;
+import com.loja_uniformes.admin.domain.product.ProductFeatureEntity;
+import com.loja_uniformes.admin.domain.product.dtos.response.ProductFeatureResponseDto;
 import com.loja_uniformes.admin.exceptions.EntityNotFoundException;
 import com.loja_uniformes.admin.repositories.ProductFeatureRepository;
 import com.loja_uniformes.admin.repositories.ProductRepository;
@@ -20,14 +20,14 @@ public class ProductFeatureService {
     private final ProductFeatureRepository productFeatureRepository;
     private final ProductRepository productRepository;
 
-    @Autowired
     public ProductFeatureService(ProductFeatureRepository productFeatureRepository, ProductRepository productRepository) {
         this.productFeatureRepository = productFeatureRepository;
         this.productRepository = productRepository;
     }
 
+    // POST METHODS
     @Transactional
-    public ProductFeatureEntity saveProductFeature(ProductFeatureDto productFeatureDto) {
+    public ProductFeatureEntity saveProductFeature(ProductFeatureRequestDto productFeatureDto) {
         ProductFeatureEntity productFeature = new ProductFeatureEntity();
 
         ProductEntity product = productRepository.findOneByIdAndDeletedFalse(productFeatureDto.productId())
@@ -52,6 +52,7 @@ public class ProductFeatureService {
         return productFeatureRepository.save(productFeature);
     }
 
+    // DELETE METHOD
     @Transactional
     public void deleteProductFeature(UUID id) {
         Optional<ProductFeatureEntity> featureOpt = productFeatureRepository.findById(id);
@@ -64,5 +65,19 @@ public class ProductFeatureService {
         feature.setDeleted(true);
 
         productFeatureRepository.save(feature);
+    }
+
+    // CONVERT METHOD
+    public ProductFeatureResponseDto toProductFeatureResponseDto(ProductFeatureEntity productFeature) {
+        return new ProductFeatureResponseDto(
+                productFeature.getId(),
+                productFeature.getColor(),
+                productFeature.getSize(),
+                productFeature.getPrice(),
+                productFeature.getStockQuantity(),
+                productFeature.getAvailable(),
+                productFeature.getDeleted(),
+                productFeature.getProduct().getId()
+        );
     }
 }

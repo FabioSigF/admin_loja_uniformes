@@ -1,8 +1,9 @@
 package com.loja_uniformes.admin.modules.company;
 
-import com.loja_uniformes.admin.domain.dto.CompanyDto;
-import com.loja_uniformes.admin.domain.entity.postgres.CompanyEntity;
-import com.loja_uniformes.admin.domain.enums.CompanyCategoryEnum;
+import com.loja_uniformes.admin.domain.company.dtos.request.CompanyRequestDto;
+import com.loja_uniformes.admin.domain.company.CompanyEntity;
+import com.loja_uniformes.admin.domain.company.dtos.response.CompanyResponseDto;
+import com.loja_uniformes.admin.domain.company.enums.CompanyCategoryEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,27 +23,27 @@ public class CompanyController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CompanyEntity>> getAllCompanies() {
+    public ResponseEntity<List<CompanyResponseDto>> getAllCompanies() {
         return ResponseEntity.status(HttpStatus.OK).body(companyService.getAllCompanies());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CompanyEntity> getCompanyById(@PathVariable UUID id) {
+    public ResponseEntity<CompanyResponseDto> getCompanyById(@PathVariable UUID id) {
         return ResponseEntity.status(HttpStatus.OK).body(companyService.getCompanyById(id));
     }
 
     @GetMapping("/search/{name}")
-    public ResponseEntity<List<CompanyEntity>> getAllCompaniesByName(@PathVariable String name) {
+    public ResponseEntity<List<CompanyResponseDto>> getAllCompaniesByName(@PathVariable String name) {
         return ResponseEntity.status(HttpStatus.OK).body(companyService.getAllCompaniesByName(name));
     }
 
     @GetMapping("/search-category/{category}")
-    public ResponseEntity<List<CompanyEntity>> getAllCompaniesByCategory(@PathVariable CompanyCategoryEnum category) {
+    public ResponseEntity<List<CompanyResponseDto>> getAllCompaniesByCategory(@PathVariable CompanyCategoryEnum category) {
         return ResponseEntity.status(HttpStatus.OK).body(companyService.getAllCompaniesByCategory(category));
     }
 
     @PostMapping
-    public ResponseEntity<CompanyEntity> saveCompany(@RequestBody CompanyDto companyDto) {
+    public ResponseEntity<CompanyEntity> saveCompany(@RequestBody CompanyRequestDto companyDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(companyService.saveCompany(companyDto));
     }
 

@@ -1,8 +1,8 @@
 package com.loja_uniformes.admin.modules.product;
 
-import com.loja_uniformes.admin.domain.dto.ProductDto;
-import com.loja_uniformes.admin.domain.entity.postgres.ProductEntity;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.loja_uniformes.admin.domain.product.dtos.request.ProductRequestDto;
+import com.loja_uniformes.admin.domain.product.ProductEntity;
+import com.loja_uniformes.admin.domain.product.dtos.response.ProductResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +20,25 @@ public class ProductController {
         this.productService = productService;
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponseDto> getProductById(@PathVariable UUID id) {
+        return ResponseEntity.status(HttpStatus.OK).body(productService.getProductById(id));
+    }
+
+    @GetMapping("/company/{id}")
+    public ResponseEntity<List<ProductResponseDto>> getAllProductsByCompanyId(@PathVariable UUID id) {
+        return ResponseEntity.status(HttpStatus.OK).body(productService.getAllProductsByCompanyId(id));
+    }
+
+    @GetMapping("/company/{id}/")
+    public ResponseEntity<List<ProductResponseDto>> getAllProductsByCompanyName(
+            @PathVariable UUID id,
+            @RequestParam("name") String name) {
+        return ResponseEntity.status(HttpStatus.OK).body(productService.getAllProductsByCompanyIdAndName(id, name));
+    }
+
     @PostMapping
-    public ResponseEntity<ProductEntity> saveProduct(@RequestBody ProductDto productDto) {
+    public ResponseEntity<ProductEntity> saveProduct(@RequestBody ProductRequestDto productDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.saveProduct(productDto));
     }
 

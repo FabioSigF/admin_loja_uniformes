@@ -1,11 +1,13 @@
 package com.loja_uniformes.admin.modules.sale;
 
 
-import com.loja_uniformes.admin.domain.dto.SaleItemDto;
-import com.loja_uniformes.admin.domain.entity.postgres.ProductEntity;
-import com.loja_uniformes.admin.domain.entity.postgres.ProductFeatureEntity;
-import com.loja_uniformes.admin.domain.entity.postgres.SaleEntity;
-import com.loja_uniformes.admin.domain.entity.postgres.SaleItemEntity;
+import com.loja_uniformes.admin.domain.product.ProductEntity;
+import com.loja_uniformes.admin.domain.sale.dtos.request.SaleItemRequestDto;
+import com.loja_uniformes.admin.domain.product.ProductFeatureEntity;
+import com.loja_uniformes.admin.domain.sale.SaleEntity;
+import com.loja_uniformes.admin.domain.sale.SaleItemEntity;
+import com.loja_uniformes.admin.domain.sale.dtos.response.SaleItemProductResponseDto;
+import com.loja_uniformes.admin.domain.sale.dtos.response.SaleItemResponseDto;
 import com.loja_uniformes.admin.exceptions.EntityNotFoundException;
 import com.loja_uniformes.admin.repositories.ProductFeatureRepository;
 import com.loja_uniformes.admin.repositories.ProductRepository;
@@ -19,15 +21,17 @@ public class SaleItemService {
     private final SaleItemRepository saleItemRepository;
     private final SaleRepository saleRepository;
     private final ProductFeatureRepository productFeatureRepository;
+    private final ProductRepository productRepository;
 
-    public SaleItemService(SaleItemRepository saleItemRepository, SaleRepository saleRepository, ProductFeatureRepository productFeatureRepository) {
+    public SaleItemService(SaleItemRepository saleItemRepository, SaleRepository saleRepository, ProductFeatureRepository productFeatureRepository, ProductRepository productRepository) {
         this.saleItemRepository = saleItemRepository;
         this.saleRepository = saleRepository;
         this.productFeatureRepository = productFeatureRepository;
+        this.productRepository = productRepository;
     }
 
     @Transactional
-    public SaleItemEntity saveSaleItem(SaleItemDto saleItemDto) {
+    public SaleItemEntity saveSaleItem(SaleItemRequestDto saleItemDto) {
 
         ProductFeatureEntity productFeature = productFeatureRepository.findOneByIdAndDeletedFalse(saleItemDto.productFeatureId())
                 .orElseThrow(() -> new EntityNotFoundException("Produto da venda não encontrado"));
@@ -43,5 +47,31 @@ public class SaleItemService {
         saleItem.setSale(sale);
 
         return saleItemRepository.save(saleItem);
+    }
+
+    public SaleItemResponseDto toSaleItemResponseDto(SaleItemEntity saleItem) {
+        SaleItemProductResponseDto product = toSaleItemProductResponseDto(saleItem.getProduct());
+
+        return new SaleItemResponseDto(
+                saleItem.getId(),
+                product,
+                saleItem.getPrice(),
+                saleItem.getAmount()
+        );
+    }
+
+    public SaleItemProductResponseDto toSaleItemProductResponseDto(ProductFeatureEntity productFeature) {
+
+        ProductEntity product = productRepository.findOneByIdAndDeletedFalse(productFeature.getProduct().getId())
+                .orElseThrow(() -> new EntityNotFoundException("O produto não foi encontrado"));
+
+        return new SaleItemProductResponseDto(
+                productFeature.getId(),
+                product.getName(),
+                productFeature.getColor(),
+                productFeature.getSize(),
+                productFeature.getPrice(),
+                productFeature.getStockQuantity()
+        );
     }
 }

@@ -1,5 +1,6 @@
-package com.loja_uniformes.admin.domain.entity.postgres;
+package com.loja_uniformes.admin.domain.sale;
 
+import com.loja_uniformes.admin.domain.product.ProductFeatureEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
