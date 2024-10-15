@@ -12,8 +12,6 @@ public record CompanyRequestDto(
         String cnpj,
         CompanyCategoryEnum category,
         Set<PhoneVo> phones,
-        Set<ProductEntity> products,
-        Instant createdAt,
-        Instant updatedAt
+        Set<ProductEntity> products
 ) {
 }
