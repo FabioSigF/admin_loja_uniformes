@@ -1,13 +1,12 @@
 package com.loja_uniformes.admin.modules.company;
 
-import com.loja_uniformes.admin.domain.company.CompanyEntity;
-import com.loja_uniformes.admin.domain.company.dtos.request.CompanyRequestDto;
-import com.loja_uniformes.admin.domain.company.dtos.response.CompanyResponseDto;
-import com.loja_uniformes.admin.domain.company.enums.CompanyCategoryEnum;
+import com.loja_uniformes.admin.domain.entity.company.CompanyEntity;
+import com.loja_uniformes.admin.domain.dto.request.CompanyRequestDto;
+import com.loja_uniformes.admin.domain.dto.response.CompanyResponseDto;
+import com.loja_uniformes.admin.domain.enums.CompanyCategoryEnum;
 import com.loja_uniformes.admin.exceptions.EntityNotFoundException;
 import com.loja_uniformes.admin.repositories.CompanyRepository;
 import com.loja_uniformes.admin.utils.validator.CnpjValidator;
-import com.loja_uniformes.admin.valueobject.PhoneVo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Instant;
 import java.util.*;

@@ -1,8 +1,8 @@
 package com.loja_uniformes.admin.modules.product;
 
-import com.loja_uniformes.admin.domain.product.dtos.request.ProductRequestDto;
-import com.loja_uniformes.admin.domain.product.ProductEntity;
-import com.loja_uniformes.admin.domain.product.dtos.response.ProductResponseDto;
+import com.loja_uniformes.admin.domain.dto.request.ProductRequestDto;
+import com.loja_uniformes.admin.domain.entity.product.ProductEntity;
+import com.loja_uniformes.admin.domain.dto.response.ProductResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

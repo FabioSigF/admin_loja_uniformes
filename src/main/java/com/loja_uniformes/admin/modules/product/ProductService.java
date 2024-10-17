@@ -1,20 +1,17 @@
 package com.loja_uniformes.admin.modules.product;
 
-import com.loja_uniformes.admin.domain.company.dtos.response.CompanyResponseDto;
-import com.loja_uniformes.admin.domain.product.dtos.request.ProductRequestDto;
-import com.loja_uniformes.admin.domain.product.dtos.request.ProductFeatureRequestDto;
-import com.loja_uniformes.admin.domain.company.CompanyEntity;
-import com.loja_uniformes.admin.domain.product.ProductEntity;
-import com.loja_uniformes.admin.domain.product.ProductFeatureEntity;
-import com.loja_uniformes.admin.domain.product.dtos.response.ProductFeatureResponseDto;
-import com.loja_uniformes.admin.domain.product.dtos.response.ProductResponseDto;
-import com.loja_uniformes.admin.domain.sale.dtos.response.SaleItemResponseDto;
+import com.loja_uniformes.admin.domain.dto.request.ProductRequestDto;
+import com.loja_uniformes.admin.domain.dto.request.ProductFeatureRequestDto;
+import com.loja_uniformes.admin.domain.entity.company.CompanyEntity;
+import com.loja_uniformes.admin.domain.entity.product.ProductEntity;
+import com.loja_uniformes.admin.domain.entity.product.ProductFeatureEntity;
+import com.loja_uniformes.admin.domain.dto.response.ProductFeatureResponseDto;
+import com.loja_uniformes.admin.domain.dto.response.ProductResponseDto;
 import com.loja_uniformes.admin.exceptions.EntityNotFoundException;
 import com.loja_uniformes.admin.repositories.CompanyRepository;
 import com.loja_uniformes.admin.repositories.ProductFeatureRepository;
 import com.loja_uniformes.admin.repositories.ProductRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

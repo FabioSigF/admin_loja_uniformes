@@ -1,19 +1,15 @@
 package com.loja_uniformes.admin.modules.company;
 
-import com.loja_uniformes.admin.domain.company.dtos.request.CompanyRequestDto;
-import com.loja_uniformes.admin.domain.company.CompanyEntity;
-import com.loja_uniformes.admin.domain.company.dtos.response.CompanyResponseDto;
-import com.loja_uniformes.admin.domain.product.ProductEntity;
-import com.loja_uniformes.admin.domain.company.enums.CompanyCategoryEnum;
-import com.loja_uniformes.admin.domain.sale.SaleEntity;
-import com.loja_uniformes.admin.domain.sale.dtos.response.SaleItemResponseDto;
-import com.loja_uniformes.admin.domain.sale.dtos.response.SaleResponseDto;
+import com.loja_uniformes.admin.domain.dto.request.CompanyRequestDto;
+import com.loja_uniformes.admin.domain.entity.company.CompanyEntity;
+import com.loja_uniformes.admin.domain.dto.response.CompanyResponseDto;
+import com.loja_uniformes.admin.domain.entity.product.ProductEntity;
+import com.loja_uniformes.admin.domain.enums.CompanyCategoryEnum;
 import com.loja_uniformes.admin.exceptions.EntityNotFoundException;
 import com.loja_uniformes.admin.modules.product.ProductService;
 import com.loja_uniformes.admin.repositories.CompanyRepository;
 import com.loja_uniformes.admin.utils.validator.CnpjValidator;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -21,19 +17,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class CompanyService {
 
-    @Autowired
     private final CompanyRepository companyRepository;
+    private final ProductService productService;
 
-    @Autowired
-    private ProductService productService;
-
-    public CompanyService(CompanyRepository companyRepository) {
+    public CompanyService(CompanyRepository companyRepository, ProductService productService) {
         this.companyRepository = companyRepository;
+        this.productService = productService;
     }
 
     // GET METHODS

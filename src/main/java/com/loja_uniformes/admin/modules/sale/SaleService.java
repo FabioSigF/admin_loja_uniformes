@@ -1,13 +1,12 @@
 package com.loja_uniformes.admin.modules.sale;
 
-import com.loja_uniformes.admin.domain.company.dtos.response.CompanyResponseDto;
-import com.loja_uniformes.admin.domain.sale.dtos.request.SaleRequestDto;
-import com.loja_uniformes.admin.domain.sale.dtos.request.SaleItemRequestDto;
-import com.loja_uniformes.admin.domain.company.CompanyEntity;
-import com.loja_uniformes.admin.domain.sale.SaleEntity;
-import com.loja_uniformes.admin.domain.company.enums.CompanyCategoryEnum;
-import com.loja_uniformes.admin.domain.sale.dtos.response.SaleItemResponseDto;
-import com.loja_uniformes.admin.domain.sale.dtos.response.SaleResponseDto;
+import com.loja_uniformes.admin.domain.dto.request.SaleRequestDto;
+import com.loja_uniformes.admin.domain.dto.request.SaleItemRequestDto;
+import com.loja_uniformes.admin.domain.entity.company.CompanyEntity;
+import com.loja_uniformes.admin.domain.entity.sale.SaleEntity;
+import com.loja_uniformes.admin.domain.enums.CompanyCategoryEnum;
+import com.loja_uniformes.admin.domain.dto.response.SaleItemResponseDto;
+import com.loja_uniformes.admin.domain.dto.response.SaleResponseDto;
 import com.loja_uniformes.admin.exceptions.EntityNotFoundException;
 import com.loja_uniformes.admin.repositories.CompanyRepository;
 import com.loja_uniformes.admin.repositories.SaleRepository;
@@ -35,7 +34,7 @@ public class SaleService {
         this.saleItemService = saleItemService;
     }
 
-    //
+
     // GET METHODS
 
     public List<SaleResponseDto> getAllSales() {
@@ -65,7 +64,6 @@ public class SaleService {
                 orElseThrow(() -> new EntityNotFoundException("Nenhuma venda encontrada na empresa."));
         return sales.stream().map(this::toSaleResponseDto).toList();
     }
-
 
     public List<SaleResponseDto> getAllSalesByCompanyIdAndDateRange(UUID id, LocalDate startDate, LocalDate endDate) {
         Instant startInstant = startDate.atStartOfDay(ZoneOffset.UTC).toInstant();
@@ -137,6 +135,17 @@ public class SaleService {
         return savedSale;
 
     }
+
+    // PATCH METHODS
+//    public SaleResponseDto updateSale(UUID id, SaleRequestDto dto) {
+//        SaleEntity saleOpt = saleRepository.findOneByIdAndDeletedFalse(id)
+//                .orElseThrow(() -> new EntityNotFoundException("A venda não foi encontrada."));
+//
+//        if(dto.saleItems() != null && !dto.saleItems().isEmpty()){
+//
+//            saleOpt.setSaleItems(dto.saleItems());
+//        }
+//    }
 
     // DELETE METHOD
     @Transactional

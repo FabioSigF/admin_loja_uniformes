@@ -1,6 +1,6 @@
 package com.loja_uniformes.admin.repositories;
 
-import com.loja_uniformes.admin.domain.product.ProductEntity;
+import com.loja_uniformes.admin.domain.entity.product.ProductEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

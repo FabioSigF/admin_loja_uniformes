@@ -1,9 +1,9 @@
 package com.loja_uniformes.admin.modules.sale;
 
-import com.loja_uniformes.admin.domain.sale.dtos.request.SaleRequestDto;
-import com.loja_uniformes.admin.domain.sale.SaleEntity;
-import com.loja_uniformes.admin.domain.company.enums.CompanyCategoryEnum;
-import com.loja_uniformes.admin.domain.sale.dtos.response.SaleResponseDto;
+import com.loja_uniformes.admin.domain.dto.request.SaleRequestDto;
+import com.loja_uniformes.admin.domain.entity.sale.SaleEntity;
+import com.loja_uniformes.admin.domain.enums.CompanyCategoryEnum;
+import com.loja_uniformes.admin.domain.dto.response.SaleResponseDto;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

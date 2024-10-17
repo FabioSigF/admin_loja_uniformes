@@ -1,14 +1,12 @@
 package com.loja_uniformes.admin.repositories;
 
-import com.loja_uniformes.admin.domain.company.CompanyEntity;
-import com.loja_uniformes.admin.domain.company.dtos.request.CompanyRequestDto;
-import com.loja_uniformes.admin.domain.company.enums.CompanyCategoryEnum;
-import com.loja_uniformes.admin.utils.validator.CnpjValidator;
+import com.loja_uniformes.admin.domain.entity.company.CompanyEntity;
+import com.loja_uniformes.admin.domain.dto.request.CompanyRequestDto;
+import com.loja_uniformes.admin.domain.enums.CompanyCategoryEnum;
 import com.loja_uniformes.admin.valueobject.PhoneVo;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -19,8 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @ActiveProfiles("test")

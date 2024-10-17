@@ -1,9 +1,9 @@
 package com.loja_uniformes.admin.modules.company;
 
-import com.loja_uniformes.admin.domain.company.dtos.request.CompanyRequestDto;
-import com.loja_uniformes.admin.domain.company.CompanyEntity;
-import com.loja_uniformes.admin.domain.company.dtos.response.CompanyResponseDto;
-import com.loja_uniformes.admin.domain.company.enums.CompanyCategoryEnum;
+import com.loja_uniformes.admin.domain.dto.request.CompanyRequestDto;
+import com.loja_uniformes.admin.domain.entity.company.CompanyEntity;
+import com.loja_uniformes.admin.domain.dto.response.CompanyResponseDto;
+import com.loja_uniformes.admin.domain.enums.CompanyCategoryEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

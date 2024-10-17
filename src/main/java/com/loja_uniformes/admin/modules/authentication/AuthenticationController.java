@@ -1,14 +1,12 @@
 package com.loja_uniformes.admin.modules.authentication;
 
-import com.loja_uniformes.admin.domain.user.UserEntity;
-import com.loja_uniformes.admin.domain.user.dtos.AuthenticationDto;
-import com.loja_uniformes.admin.domain.user.dtos.LoginResponseDto;
-import com.loja_uniformes.admin.domain.user.dtos.RegisterDto;
+import com.loja_uniformes.admin.domain.entity.user.UserEntity;
+import com.loja_uniformes.admin.domain.dto.request.AuthenticationRequestDto;
+import com.loja_uniformes.admin.domain.dto.response.LoginResponseDto;
+import com.loja_uniformes.admin.domain.dto.request.RegisterRequestDto;
 import com.loja_uniformes.admin.repositories.UserRepository;
 import com.loja_uniformes.admin.security.TokenService;
 import jakarta.validation.Valid;
-import org.apache.catalina.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,7 +31,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid AuthenticationDto data) {
+    public ResponseEntity login(@RequestBody @Valid AuthenticationRequestDto data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
@@ -42,7 +40,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(new LoginResponseDto(token));
     }
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid RegisterDto data) {
+    public ResponseEntity register(@RequestBody @Valid RegisterRequestDto data) {
         if(this.userRepository.findByLogin(data.login()) != null) return ResponseEntity.badRequest().build();
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());

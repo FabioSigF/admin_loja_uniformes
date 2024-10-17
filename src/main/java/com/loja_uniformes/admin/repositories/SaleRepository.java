@@ -1,7 +1,7 @@
 package com.loja_uniformes.admin.repositories;
 
-import com.loja_uniformes.admin.domain.sale.SaleEntity;
-import com.loja_uniformes.admin.domain.company.enums.CompanyCategoryEnum;
+import com.loja_uniformes.admin.domain.entity.sale.SaleEntity;
+import com.loja_uniformes.admin.domain.enums.CompanyCategoryEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.Instant;

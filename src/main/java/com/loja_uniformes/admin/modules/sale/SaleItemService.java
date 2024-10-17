@@ -1,13 +1,13 @@
 package com.loja_uniformes.admin.modules.sale;
 
 
-import com.loja_uniformes.admin.domain.product.ProductEntity;
-import com.loja_uniformes.admin.domain.sale.dtos.request.SaleItemRequestDto;
-import com.loja_uniformes.admin.domain.product.ProductFeatureEntity;
-import com.loja_uniformes.admin.domain.sale.SaleEntity;
-import com.loja_uniformes.admin.domain.sale.SaleItemEntity;
-import com.loja_uniformes.admin.domain.sale.dtos.response.SaleItemProductResponseDto;
-import com.loja_uniformes.admin.domain.sale.dtos.response.SaleItemResponseDto;
+import com.loja_uniformes.admin.domain.entity.product.ProductEntity;
+import com.loja_uniformes.admin.domain.dto.request.SaleItemRequestDto;
+import com.loja_uniformes.admin.domain.entity.product.ProductFeatureEntity;
+import com.loja_uniformes.admin.domain.entity.sale.SaleEntity;
+import com.loja_uniformes.admin.domain.entity.sale.SaleItemEntity;
+import com.loja_uniformes.admin.domain.dto.response.SaleItemProductResponseDto;
+import com.loja_uniformes.admin.domain.dto.response.SaleItemResponseDto;
 import com.loja_uniformes.admin.exceptions.EntityNotFoundException;
 import com.loja_uniformes.admin.repositories.ProductFeatureRepository;
 import com.loja_uniformes.admin.repositories.ProductRepository;

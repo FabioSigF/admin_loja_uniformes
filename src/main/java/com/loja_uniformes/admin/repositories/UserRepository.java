@@ -1,6 +1,6 @@
 package com.loja_uniformes.admin.repositories;
 
-import com.loja_uniformes.admin.domain.user.UserEntity;
+import com.loja_uniformes.admin.domain.entity.user.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 
