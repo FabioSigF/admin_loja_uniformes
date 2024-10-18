@@ -5,9 +5,6 @@ Esse projeto foi desenvolvido para a empresa Silvana Uniformes, presente há qua
 
 O objetivo é dar total controle e visibilidade para o usuário sobre o ecossistema do seu negócio, de forma simples e rápida.
 
-
-
-
 ## Funcionalidades
 - Cadastrar, editar e remover empresas parceiras;
 - Cadastrar, editar e remover vendas realizadas para as empresas;
@@ -51,8 +48,99 @@ O banco de dados utilizado foi o PostgreSQL.
 ### UML da API
 ![Admin Loja](https://github.com/user-attachments/assets/8e761a7b-05d7-441c-bfc8-033ed4fda640)
 
+### Tecnologias utilizadas
+
+- Java 21
+- Spring Framework
+    - JPA
+    - Hibernate
+    - Lombok
+    - Validation
+    - Security
+- PostgreSQL (DB)
+- JUnit5 (Testes)
+- Mockito (Criar mocks para testes)
+- H2Database (Base de dados em memória para testar banco)
+- JWT (Autenticação por token)
 
 ## Documentação da API
+
+### Company
+
+#### Cadastrar uma empresa
+
+```http
+  POST /companies
+```
+
+O único requesito desse método é o body. Ele deve ser algo como:
+
+```json
+{
+    "name": "Escola",
+    "cnpj": "85883307000130",
+    "category": "EDUCACAO",
+    "phones": [
+        {
+        "number": "32233223",
+        "deleted": false
+        },
+        {
+        "number": "32233223",
+        "deleted": false
+        }
+    ]
+}
+```
+
+**Observação**: O CNPJ possui um validator. Portanto, você deve inserir um CNPJ válido, ou será gerada uma Exception.
+
+#### Retornar todas as empresas do sistema
+
+```http
+  GET /companies
+```
+
+#### Retornar empresa por ID
+
+```http
+  GET /companies/{id}
+```
+
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `id`      | `UUID` | **Obrigatório**. O ID da empresa que você quer |
+
+
+#### Retornar lista de empresas por busca de nome
+
+```http
+  GET /companies/search/{nome}
+```
+
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `nome`      | `String` | **Obrigatório**. O nome da empresa que você busca |
+
+#### Retornar lista de empresas por busca de categoria
+
+```http
+  GET /companies/search-category/{categoria}
+```
+
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `categoria`      | `CategoryEnum` | **Obrigatório**. Categoria de empresa |
+
+#### Deleta uma empresa por ID
+
+```http
+  DELETE /companies/delete/{id}
+```
+
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `id`      | `UUID` | **Obrigatório**. O ID da empresa |
 
 ### Produtos
 
@@ -135,84 +223,6 @@ O único requesito desse método é o body. Ele deve ser algo como:
 | :---------- | :--------- | :------------------------------------------ |
 | `id`      | `UUID` | **Obrigatório**. O ID do produto |
 
-### Company
-
-#### Cadastrar uma empresa
-
-```http
-  POST /companies
-```
-
-O único requesito desse método é o body. Ele deve ser algo como:
-
-```json
-{
-    "name": "Escola",
-    "cnpj": "85883307000130",
-    "category": "EDUCACAO",
-    "phones": [
-        {
-        "number": "32233223",
-        "deleted": false
-        },
-        {
-        "number": "32233223",
-        "deleted": false
-        }
-    ]
-}
-```
-
-**Observação**: O CNPJ possui um validator. Portanto, você deve inserir um CNPJ válido, ou será gerada uma Exception.
-
-#### Retornar todas as empresas do sistema
-
-```http
-  GET /companies
-```
-
-#### Retornar empresa por ID
-
-```http
-  GET /companies/{id}
-```
-
-| Parâmetro   | Tipo       | Descrição                                   |
-| :---------- | :--------- | :------------------------------------------ |
-| `id`      | `UUID` | **Obrigatório**. O ID da empresa que você quer |
-
-
-#### Retornar lista de empresas por busca de nome
-
-```http
-  GET /companies/search/{nome}
-```
-
-| Parâmetro   | Tipo       | Descrição                                   |
-| :---------- | :--------- | :------------------------------------------ |
-| `nome`      | `String` | **Obrigatório**. O nome da empresa que você busca |
-
-#### Retornar lista de empresas por busca de categoria
-
-```http
-  GET /companies/search-category/{categoria}
-```
-
-| Parâmetro   | Tipo       | Descrição                                   |
-| :---------- | :--------- | :------------------------------------------ |
-| `categoria`      | `CategoryEnum` | **Obrigatório**. Categoria de empresa |
-
-#### Deleta uma empresa por ID
-
-```http
-  DELETE /companies/delete/{id}
-```
-
-| Parâmetro   | Tipo       | Descrição                                   |
-| :---------- | :--------- | :------------------------------------------ |
-| `id`      | `UUID` | **Obrigatório**. O ID da empresa |
-
-
 ### Sale
 
 #### Cadastrar uma venda
@@ -268,4 +278,58 @@ O único requesito desse método é o body. Ele deve ser algo como:
 | `startDate`      | `UUID` | **Obrigatório**. YYYY-MM-DD |
 | `endDate`      | `UUID` | **Obrigatório**. YYYY-MM-DD |
 
+#### Retornar todas as vendas de uma empresa entre datas
 
+```http
+  GET sale/company/{id}/by-date-range/?startDate={startDate}&endDate={endDate}
+```
+
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `id`      | `UUID` | **Obrigatório**. O ID da empresa |
+| `startDate`      | `UUID` | **Obrigatório**. YYYY-MM-DD |
+| `endDate`      | `UUID` | **Obrigatório**. YYYY-MM-DD |
+
+#### Retornar todas as vendas de uma categoria entre datas
+
+```http
+  GET sale/category/?category={category}&startDate={startDate}&endDate={endDate}
+```
+
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `category`      | `UUID` | **Obrigatório**. CategoryEnum |
+| `startDate`      | `UUID` | **Obrigatório**. YYYY-MM-DD |
+| `endDate`      | `UUID` | **Obrigatório**. YYYY-MM-DD |
+
+
+### User
+
+#### Criar usuário
+
+```http
+  POST auht/register
+```
+
+O único requesito desse método é o body. Ele deve ser algo como:
+```json
+{
+    "login": "usuario",
+    "password": "123456789",
+    "role": "ADMIN"
+}
+```
+
+#### Loin de usuário
+
+```http
+  POST auht/login
+```
+
+O único requesito desse método é o body. Ele deve ser algo como:
+```json
+{
+    "login": "usuario",
+    "password": "123456789",
+}
+```
