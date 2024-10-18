@@ -1,14 +1,18 @@
 package com.loja_uniformes.admin.modules.sale;
 
+import com.loja_uniformes.admin.domain.dto.request.ProductFeatureRequestDto;
 import com.loja_uniformes.admin.domain.dto.request.SaleRequestDto;
 import com.loja_uniformes.admin.domain.dto.request.SaleItemRequestDto;
 import com.loja_uniformes.admin.domain.entity.company.CompanyEntity;
+import com.loja_uniformes.admin.domain.entity.product.ProductFeatureEntity;
 import com.loja_uniformes.admin.domain.entity.sale.SaleEntity;
 import com.loja_uniformes.admin.domain.enums.CompanyCategoryEnum;
 import com.loja_uniformes.admin.domain.dto.response.SaleItemResponseDto;
 import com.loja_uniformes.admin.domain.dto.response.SaleResponseDto;
 import com.loja_uniformes.admin.exceptions.EntityNotFoundException;
+import com.loja_uniformes.admin.modules.product.ProductFeatureService;
 import com.loja_uniformes.admin.repositories.CompanyRepository;
+import com.loja_uniformes.admin.repositories.ProductFeatureRepository;
 import com.loja_uniformes.admin.repositories.SaleRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -27,11 +31,15 @@ public class SaleService {
     private final SaleRepository saleRepository;
     private final CompanyRepository companyRepository;
     private final SaleItemService saleItemService;
+    private final ProductFeatureRepository productFeatureRepository;
+    private final ProductFeatureService productFeatureService;
 
-    public SaleService(SaleRepository saleRepository, CompanyRepository companyRepository, SaleItemService saleItemService) {
+    public SaleService(SaleRepository saleRepository, CompanyRepository companyRepository, SaleItemService saleItemService, ProductFeatureRepository productFeatureRepository, ProductFeatureService productFeatureService) {
         this.saleRepository = saleRepository;
         this.companyRepository = companyRepository;
         this.saleItemService = saleItemService;
+        this.productFeatureRepository = productFeatureRepository;
+        this.productFeatureService = productFeatureService;
     }
 
 
@@ -94,6 +102,7 @@ public class SaleService {
     }
 
     // POST METHODS
+    @Transactional
     public SaleEntity saveSale(SaleRequestDto saleDto) {
         if (saleDto.companyId() == null) {
             throw new IllegalArgumentException("O ID da empresa não pode ser nulo.");
@@ -123,13 +132,26 @@ public class SaleService {
         // Adicionando itens da venda
 
         saleDto.saleItems().forEach(item -> {
-            SaleItemRequestDto itemDto = new SaleItemRequestDto(
-                    savedSale.getId(),
-                    item.productFeatureId(),
-                    item.price(),
-                    item.amount()
-            );
-            saleItemService.saveSaleItem(itemDto);
+            ProductFeatureEntity productFeature = productFeatureRepository.findOneByIdAndDeletedFalse(item.productFeatureId())
+                    .orElseThrow(() -> new EntityNotFoundException("Produto da venda não foi encontrado."));
+
+            if (productFeature.getStockQuantity() >= item.amount()) {
+                SaleItemRequestDto itemDto = new SaleItemRequestDto(
+                        savedSale.getId(),
+                        item.productFeatureId(),
+                        item.price(),
+                        item.amount()
+                );
+                int newStock = productFeature.getStockQuantity() - item.amount();
+
+                ProductFeatureRequestDto productFeatureRequestDto = new ProductFeatureRequestDto(null, null, null, newStock, null);
+
+                productFeatureService.updateProductFeature(productFeature.getId(), productFeatureRequestDto);
+
+                saleItemService.saveSaleItem(itemDto);
+            } else {
+                throw new IllegalArgumentException("Não existem unidades suficientes de produtos no estoque.");
+            }
         });
 
         return savedSale;
@@ -137,15 +159,6 @@ public class SaleService {
     }
 
     // PATCH METHODS
-//    public SaleResponseDto updateSale(UUID id, SaleRequestDto dto) {
-//        SaleEntity saleOpt = saleRepository.findOneByIdAndDeletedFalse(id)
-//                .orElseThrow(() -> new EntityNotFoundException("A venda não foi encontrada."));
-//
-//        if(dto.saleItems() != null && !dto.saleItems().isEmpty()){
-//
-//            saleOpt.setSaleItems(dto.saleItems());
-//        }
-//    }
 
     // DELETE METHOD
     @Transactional

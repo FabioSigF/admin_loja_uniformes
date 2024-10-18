@@ -51,6 +51,35 @@ public class ProductFeatureService {
         return productFeatureRepository.save(productFeature);
     }
 
+    // PATCH METHODS
+    @Transactional
+    public ProductFeatureResponseDto updateProductFeature(UUID id, ProductFeatureRequestDto dto) {
+        ProductFeatureEntity productOpt = productFeatureRepository.findOneByIdAndDeletedFalse(id)
+                .orElseThrow(() -> new EntityNotFoundException("Característica do produto não foi encontrada."));
+
+        if(dto.color() != null) {
+            productOpt.setColor(dto.color());
+        }
+
+        if(dto.size() != null) {
+            productOpt.setSize(dto.size());
+        }
+
+        if(dto.price() != null) {
+            productOpt.setPrice(dto.price());
+        }
+
+        if(dto.stockQuantity() > -1) {
+            productOpt.setStockQuantity(dto.stockQuantity());
+        } else {
+            throw new IllegalArgumentException("O novo valor de estoque deve ser maior ou igual a 0.");
+        }
+
+        productFeatureRepository.save(productOpt);
+
+        return toProductFeatureResponseDto(productOpt);
+    }
+
     // DELETE METHOD
     @Transactional
     public void deleteProductFeature(UUID id) {

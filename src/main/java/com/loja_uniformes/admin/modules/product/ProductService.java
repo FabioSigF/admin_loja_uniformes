@@ -92,8 +92,6 @@ public class ProductService {
                         feature.getSize(),
                         feature.getPrice(),
                         feature.getStockQuantity(),
-                        feature.getAvailable(),
-                        feature.getDeleted(),
                         savedProduct.getId() // Assigning savedProduct to the ProductFeatureDto
                 );
                 productFeatureService.saveProductFeature(featureDto);
