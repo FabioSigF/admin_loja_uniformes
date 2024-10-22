@@ -34,25 +34,25 @@ public class CompanyService {
     public CompanyResponseDto getCompanyById(UUID id) {
         CompanyEntity company = companyRepository.findOneByIdAndDeletedFalse(id).
                 orElseThrow(() -> new EntityNotFoundException("Nenhuma empresa encontrada com o id fornecido."));
-        return toCompanyResponseDto(company);
+        return CompanyResponseDto.toCompanyResponseDto(company);
     }
 
     public List<CompanyResponseDto> getAllCompanies() {
         List<CompanyEntity> companies = companyRepository.findAllByDeletedFalse()
                 .orElseThrow(() -> new EntityNotFoundException("Nenhuma empresa encontrada."));
-        return companies.stream().map(this::toCompanyResponseDto).toList();
+        return companies.stream().map(CompanyResponseDto::toCompanyResponseDto).toList();
     }
 
     public List<CompanyResponseDto> getAllCompaniesByName(String name) {
         List<CompanyEntity> companies = companyRepository.findAllByNameContainingIgnoreCaseAndDeletedFalse(name)
                 .orElseThrow(() -> new EntityNotFoundException("Nenhuma empresa encontrada com o nome fornecido."));
-        return companies.stream().map(this::toCompanyResponseDto).toList();
+        return companies.stream().map(CompanyResponseDto::toCompanyResponseDto).toList();
     }
 
     public List<CompanyResponseDto> getAllCompaniesByCategory(CompanyCategoryEnum category) {
         List<CompanyEntity> companies = companyRepository.findAllByCategoryAndDeletedFalse(category)
                 .orElseThrow(() -> new EntityNotFoundException("Nenhuma empresa encontrada na categoria " + category.getDescription() + "."));
-        return companies.stream().map(this::toCompanyResponseDto).toList();
+        return companies.stream().map(CompanyResponseDto::toCompanyResponseDto).toList();
     }
 
     // POST METHODS
@@ -106,19 +106,5 @@ public class CompanyService {
         companyProducts.forEach(product -> productService.deleteProduct(product.getId()));
 
         companyRepository.save(company);
-    }
-
-    //CONVERT METHODS
-
-    public CompanyResponseDto toCompanyResponseDto(CompanyEntity company) {
-        return new CompanyResponseDto(
-                company.getId(),
-                company.getName(),
-                company.getCnpj(),
-                company.getCategory(),
-                company.getPhones(),
-                company.getCreatedAt(),
-                company.getUpdatedAt()
-        );
     }
 }

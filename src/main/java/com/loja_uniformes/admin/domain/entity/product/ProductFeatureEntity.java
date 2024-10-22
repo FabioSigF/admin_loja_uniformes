@@ -25,6 +25,9 @@ public class ProductFeatureEntity implements Serializable {
     @Column(name = "color", nullable = false)
     private String color;
 
+    @Column(name = "name", nullable = false)
+    private String name;
+
     @Column(name = "size", nullable = false)
     private String size;
 

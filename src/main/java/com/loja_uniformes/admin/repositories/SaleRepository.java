@@ -12,6 +12,8 @@ import java.util.UUID;
 public interface SaleRepository extends JpaRepository<SaleEntity, UUID> {
     Optional<List<SaleEntity>> findAllByDeletedFalse();
 
+    Optional<List<SaleEntity>> findAllByDeletedFalseOrderByCreatedAtDesc();
+
     Optional<List<SaleEntity>> findAllByCreatedAtBetweenAndDeletedFalse(Instant startDate, Instant endDate);
 
     Optional<List<SaleEntity>> findAllByCompanyIdAndDeletedFalse(UUID companyId);

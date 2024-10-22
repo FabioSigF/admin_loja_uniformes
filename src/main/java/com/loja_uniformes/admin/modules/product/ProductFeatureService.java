@@ -42,8 +42,13 @@ public class ProductFeatureService {
             throw new IllegalArgumentException("Não é permitido criar características repetidas para o mesmo produto.");
         }
 
+
         productFeature.setSize(productFeatureDto.size());
         productFeature.setColor(productFeatureDto.color());
+
+        String name = product.getName() + " " + productFeatureDto.size() + " " + productFeatureDto.color();
+        productFeature.setName(name);
+
         productFeature.setPrice(productFeatureDto.price());
         productFeature.setStockQuantity(productFeatureDto.stockQuantity());
         productFeature.setProduct(product);
@@ -59,10 +64,14 @@ public class ProductFeatureService {
 
         if(dto.color() != null) {
             productOpt.setColor(dto.color());
+            String name = productOpt.getName() + " " + productOpt.getSize() + " " + productOpt.getColor();
+            productOpt.setName(name);
         }
 
         if(dto.size() != null) {
             productOpt.setSize(dto.size());
+            String name = productOpt.getName() + " " + productOpt.getSize() + " " + productOpt.getColor();
+            productOpt.setName(name);
         }
 
         if(dto.price() != null) {
@@ -77,7 +86,7 @@ public class ProductFeatureService {
 
         productFeatureRepository.save(productOpt);
 
-        return toProductFeatureResponseDto(productOpt);
+        return ProductFeatureResponseDto.toProductFeatureResponseDto(productOpt);
     }
 
     // DELETE METHOD
@@ -95,17 +104,4 @@ public class ProductFeatureService {
         productFeatureRepository.save(feature);
     }
 
-    // CONVERT METHOD
-    public ProductFeatureResponseDto toProductFeatureResponseDto(ProductFeatureEntity productFeature) {
-        return new ProductFeatureResponseDto(
-                productFeature.getId(),
-                productFeature.getColor(),
-                productFeature.getSize(),
-                productFeature.getPrice(),
-                productFeature.getStockQuantity(),
-                productFeature.getAvailable(),
-                productFeature.getDeleted(),
-                productFeature.getProduct().getId()
-        );
-    }
 }

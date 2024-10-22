@@ -40,21 +40,21 @@ public class ProductService {
         ProductEntity product = productRepository.findOneByIdAndDeletedFalse(id)
                 .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado."));
 
-        return toProductResponseDto(product);
+        return ProductResponseDto.toProductResponseDto(product);
     }
 
     public List<ProductResponseDto> getAllProductsByCompanyId(UUID id) {
         List<ProductEntity> products = productRepository.findAllByCompanyIdAndDeletedFalse(id)
                 .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado."));
 
-        return products.stream().map(this::toProductResponseDto).toList();
+        return products.stream().map(ProductResponseDto::toProductResponseDto).toList();
     }
 
     public List<ProductResponseDto> getAllProductsByCompanyIdAndName(UUID companyId, String name) {
         List<ProductEntity> products = productRepository.findAllByCompanyIdAndNameContainingIgnoreCaseAndDeletedFalse(companyId, name)
                 .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado;"));
 
-        return products.stream().map(this::toProductResponseDto).toList();
+        return products.stream().map(ProductResponseDto::toProductResponseDto).toList();
     }
 
     // POST METHODS
@@ -126,21 +126,5 @@ public class ProductService {
         productFeatures.forEach(productFeature -> productFeatureService.deleteProductFeature(productFeature.getId()));
 
         productRepository.save(product);
-    }
-
-    // CONVERT METHOD
-    public ProductResponseDto toProductResponseDto(ProductEntity product) {
-
-        Set<ProductFeatureResponseDto> productFeatures = product.getProductFeatures().stream()
-                .map(productFeatureService::toProductFeatureResponseDto).collect(Collectors.toSet());
-
-        return new ProductResponseDto(
-                product.getId(),
-                product.getCompany().getId(),
-                product.getName(),
-                product.getDescription(),
-                product.getGender(),
-                productFeatures
-        );
     }
 }

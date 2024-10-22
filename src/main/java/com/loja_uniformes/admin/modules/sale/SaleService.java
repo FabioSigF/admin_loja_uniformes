@@ -3,12 +3,11 @@ package com.loja_uniformes.admin.modules.sale;
 import com.loja_uniformes.admin.domain.dto.request.ProductFeatureRequestDto;
 import com.loja_uniformes.admin.domain.dto.request.SaleRequestDto;
 import com.loja_uniformes.admin.domain.dto.request.SaleItemRequestDto;
+import com.loja_uniformes.admin.domain.dto.response.SaleResponseDto;
 import com.loja_uniformes.admin.domain.entity.company.CompanyEntity;
 import com.loja_uniformes.admin.domain.entity.product.ProductFeatureEntity;
 import com.loja_uniformes.admin.domain.entity.sale.SaleEntity;
 import com.loja_uniformes.admin.domain.enums.CompanyCategoryEnum;
-import com.loja_uniformes.admin.domain.dto.response.SaleItemResponseDto;
-import com.loja_uniformes.admin.domain.dto.response.SaleResponseDto;
 import com.loja_uniformes.admin.exceptions.EntityNotFoundException;
 import com.loja_uniformes.admin.modules.product.ProductFeatureService;
 import com.loja_uniformes.admin.repositories.CompanyRepository;
@@ -47,15 +46,22 @@ public class SaleService {
 
     public List<SaleResponseDto> getAllSales() {
         List<SaleEntity> sales = saleRepository.findAllByDeletedFalse().
-                orElseThrow(() -> new EntityNotFoundException("Nenhuma venda enconstrada."));
+                orElseThrow(() -> new EntityNotFoundException("Nenhuma venda encontrada."));
 
-        return sales.stream().map(this::toSaleResponseDto).toList();
+        return sales.stream().map(SaleResponseDto::toSaleResponseDto).toList();
+    }
+
+    public List<SaleResponseDto> getAllLastSales() {
+        List<SaleEntity> sales = saleRepository.findAllByDeletedFalseOrderByCreatedAtDesc()
+                .orElseThrow(() -> new EntityNotFoundException("Nenhuma venda encontrada."));
+
+        return sales.stream().map(SaleResponseDto::toSaleResponseDto).toList();
     }
 
     public SaleResponseDto getSaleById(UUID id) {
         SaleEntity sale = saleRepository.findOneByIdAndDeletedFalse(id).
                 orElseThrow(() -> new EntityNotFoundException("Nenhuma venda encontrada com o id fornecido."));
-        return toSaleResponseDto(sale);
+        return SaleResponseDto.toSaleResponseDto(sale);
     }
 
     public List<SaleResponseDto> getAllSalesByDateRange(LocalDate startDate, LocalDate endDate) {
@@ -64,13 +70,13 @@ public class SaleService {
 
         List<SaleEntity> sales = saleRepository.findAllByCreatedAtBetweenAndDeletedFalse(startInstant, endInstant).
                 orElseThrow(() -> new EntityNotFoundException("Nenhuma venda encontrada durante essas datas."));
-        return sales.stream().map(this::toSaleResponseDto).toList();
+        return sales.stream().map(SaleResponseDto::toSaleResponseDto).toList();
     }
 
     public List<SaleResponseDto> getAllSalesByCompanyId(UUID id) {
         List<SaleEntity> sales = saleRepository.findAllByCompanyIdAndDeletedFalse(id).
                 orElseThrow(() -> new EntityNotFoundException("Nenhuma venda encontrada na empresa."));
-        return sales.stream().map(this::toSaleResponseDto).toList();
+        return sales.stream().map(SaleResponseDto::toSaleResponseDto).toList();
     }
 
     public List<SaleResponseDto> getAllSalesByCompanyIdAndDateRange(UUID id, LocalDate startDate, LocalDate endDate) {
@@ -81,7 +87,7 @@ public class SaleService {
 
         System.out.println("Start Instant: " + startInstant);
         System.out.println("End Instant: " + endInstant);
-        return sales.stream().map(this::toSaleResponseDto).toList();
+        return sales.stream().map(SaleResponseDto::toSaleResponseDto).toList();
     }
 
     public List<SaleResponseDto> getAllSalesByCompanyIdAndDate(UUID id, LocalDate createdAt) {
@@ -90,7 +96,7 @@ public class SaleService {
 
         List<SaleEntity> sales = saleRepository.findAllByCompanyIdAndCreatedAtBetweenAndDeletedFalse(id, createdAtInstant, endInstant).
                 orElseThrow(() -> new EntityNotFoundException("Nenhuma venda encontrada na empresa nessa data."));
-        return sales.stream().map(this::toSaleResponseDto).toList();
+        return sales.stream().map(SaleResponseDto::toSaleResponseDto).toList();
     }
 
     public List<SaleResponseDto> getAllSalesByCompanyCategoryAndDateRange(CompanyCategoryEnum category, LocalDate startDate, LocalDate endDate) {
@@ -98,7 +104,7 @@ public class SaleService {
         Instant endInstant = endDate.atTime(23, 59, 59).atZone(ZoneOffset.UTC).toInstant();
         List<SaleEntity> sales = saleRepository.findAllByCompanyCategoryAndCreatedAtBetweenAndDeletedFalse(category, startInstant, endInstant).
                 orElseThrow(() -> new EntityNotFoundException("Nenhuma venda encontrada por empresas dessa categoria e durante essas datas."));
-        return sales.stream().map(this::toSaleResponseDto).toList();
+        return sales.stream().map(SaleResponseDto::toSaleResponseDto).toList();
     }
 
     // POST METHODS
@@ -173,21 +179,5 @@ public class SaleService {
         sale.setDeleted(true);
 
         saleRepository.save(sale);
-    }
-
-    // CONVERT METHOD
-    public SaleResponseDto toSaleResponseDto(SaleEntity sale) {
-
-        Set<SaleItemResponseDto> saleItems = sale.getSaleItems().stream()
-                .map(saleItemService::toSaleItemResponseDto).collect(Collectors.toSet());
-
-        return new SaleResponseDto(
-                sale.getId(),
-                sale.getCompany().getId(),
-                sale.getCreatedAt(),
-                sale.getUpdatedAt(),
-                sale.getDeleted(),
-                saleItems
-        );
     }
 }

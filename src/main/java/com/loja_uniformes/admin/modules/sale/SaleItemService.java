@@ -21,13 +21,11 @@ public class SaleItemService {
     private final SaleItemRepository saleItemRepository;
     private final SaleRepository saleRepository;
     private final ProductFeatureRepository productFeatureRepository;
-    private final ProductRepository productRepository;
 
     public SaleItemService(SaleItemRepository saleItemRepository, SaleRepository saleRepository, ProductFeatureRepository productFeatureRepository, ProductRepository productRepository) {
         this.saleItemRepository = saleItemRepository;
         this.saleRepository = saleRepository;
         this.productFeatureRepository = productFeatureRepository;
-        this.productRepository = productRepository;
     }
 
     @Transactional
@@ -49,29 +47,7 @@ public class SaleItemService {
         return saleItemRepository.save(saleItem);
     }
 
-    public SaleItemResponseDto toSaleItemResponseDto(SaleItemEntity saleItem) {
-        SaleItemProductResponseDto product = toSaleItemProductResponseDto(saleItem.getProduct());
 
-        return new SaleItemResponseDto(
-                saleItem.getId(),
-                product,
-                saleItem.getPrice(),
-                saleItem.getAmount()
-        );
-    }
 
-    public SaleItemProductResponseDto toSaleItemProductResponseDto(ProductFeatureEntity productFeature) {
 
-        ProductEntity product = productRepository.findOneByIdAndDeletedFalse(productFeature.getProduct().getId())
-                .orElseThrow(() -> new EntityNotFoundException("O produto não foi encontrado"));
-
-        return new SaleItemProductResponseDto(
-                productFeature.getId(),
-                product.getName(),
-                productFeature.getColor(),
-                productFeature.getSize(),
-                productFeature.getPrice(),
-                productFeature.getStockQuantity()
-        );
-    }
 }
