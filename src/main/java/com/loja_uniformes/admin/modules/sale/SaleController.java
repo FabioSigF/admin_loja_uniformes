@@ -4,6 +4,8 @@ import com.loja_uniformes.admin.domain.dto.request.SaleRequestDto;
 import com.loja_uniformes.admin.domain.dto.response.SaleResponseDto;
 import com.loja_uniformes.admin.domain.entity.sale.SaleEntity;
 import com.loja_uniformes.admin.domain.enums.CompanyCategoryEnum;
+
+import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +40,17 @@ public class SaleController {
         return ResponseEntity.status(HttpStatus.OK).body(saleService.getSaleById(id));
     }
 
-    @GetMapping("/")
+    @GetMapping("/by-date/pagination/")
+    public ResponseEntity<Page<SaleResponseDto>> getAllSalesByDateRangeWithPagination(
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
+        Page<SaleResponseDto> sales = saleService.getAllSalesByDateRangeWithPagination(startDate, endDate, page, limit);
+        return ResponseEntity.ok(sales);
+    }
+
+    @GetMapping("/by-date/")
     public ResponseEntity<List<SaleResponseDto>> getAllSalesByDateRange(
             @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {

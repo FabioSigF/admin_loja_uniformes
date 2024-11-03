@@ -13,7 +13,7 @@ public record SaleItemProductResponseDto(UUID productId, //ProductFeatureId
                                          String color,
                                          String size,
                                          double price,
-                                         int amount
+                                         int stockAmount
 
 ) {
 

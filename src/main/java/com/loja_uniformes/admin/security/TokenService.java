@@ -32,7 +32,7 @@ public class TokenService {
         }
     }
 
-    public String validateToken(String token) {
+    public String validateToken(String token) throws JWTVerificationException {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.require(algorithm)

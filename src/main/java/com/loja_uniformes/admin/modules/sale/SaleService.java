@@ -13,7 +13,11 @@ import com.loja_uniformes.admin.modules.product.ProductFeatureService;
 import com.loja_uniformes.admin.repositories.CompanyRepository;
 import com.loja_uniformes.admin.repositories.ProductFeatureRepository;
 import com.loja_uniformes.admin.repositories.SaleRepository;
+import com.loja_uniformes.admin.utils.pagination.PageUtil;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -71,6 +75,17 @@ public class SaleService {
         List<SaleEntity> sales = saleRepository.findAllByCreatedAtBetweenAndDeletedFalse(startInstant, endInstant).
                 orElseThrow(() -> new EntityNotFoundException("Nenhuma venda encontrada durante essas datas."));
         return sales.stream().map(SaleResponseDto::toSaleResponseDto).toList();
+    }
+
+    public Page<SaleResponseDto> getAllSalesByDateRangeWithPagination(LocalDate startDate, LocalDate endDate, Integer page, Integer limit) {
+        Instant startInstant = startDate.atStartOfDay(ZoneOffset.UTC).toInstant();
+        Instant endInstant = endDate.atTime(23, 59, 59).atZone(ZoneOffset.UTC).toInstant();
+
+        Pageable pageable = PageUtil.generatedPage(page, limit, Sort.Direction.DESC, "createdAt");
+
+        Page<SaleEntity> sales = saleRepository.findAllByCreatedAtBetweenAndDeletedFalse(startInstant, endInstant, pageable).
+                orElseThrow(() -> new EntityNotFoundException("Nenhuma venda encontrada durante essas datas."));
+        return sales.map(SaleResponseDto::toSaleResponseDto);
     }
 
     public List<SaleResponseDto> getAllSalesByCompanyId(UUID id) {
