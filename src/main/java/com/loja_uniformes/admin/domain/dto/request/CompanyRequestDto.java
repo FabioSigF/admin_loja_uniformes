@@ -11,6 +11,6 @@ public record CompanyRequestDto(
         String cnpj,
         CompanyCategoryEnum category,
         Set<PhoneVo> phones,
-        Set<ProductEntity> products
+        Set<ProductRequestDto> products
 ) {
 }

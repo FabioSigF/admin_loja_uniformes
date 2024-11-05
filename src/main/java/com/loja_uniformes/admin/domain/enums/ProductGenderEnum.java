@@ -1,7 +1,7 @@
 package com.loja_uniformes.admin.domain.enums;
 
 public enum ProductGenderEnum {
-    MASCULINO ("Masculino"), FEMININO ("Feminino");
+    MASCULINO ("Masculino"), FEMININO ("Feminino"), UNISSEX( "Unissex");
 
     private final String description;
 

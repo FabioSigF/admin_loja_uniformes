@@ -1,10 +1,12 @@
 package com.loja_uniformes.admin.modules.company;
 
 import com.loja_uniformes.admin.domain.dto.request.CompanyRequestDto;
+import com.loja_uniformes.admin.domain.dto.response.SaleResponseDto;
 import com.loja_uniformes.admin.domain.entity.company.CompanyEntity;
 import com.loja_uniformes.admin.domain.dto.response.CompanyResponseDto;
 import com.loja_uniformes.admin.domain.enums.CompanyCategoryEnum;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +27,13 @@ public class CompanyController {
     @GetMapping
     public ResponseEntity<List<CompanyResponseDto>> getAllCompanies() {
         return ResponseEntity.status(HttpStatus.OK).body(companyService.getAllCompanies());
+    }
+
+    @GetMapping("/pagination/")
+    public ResponseEntity<Page<CompanyResponseDto>> getAllCompaniesWithPagination(@RequestParam(value = "page", defaultValue = "1") Integer page,
+                                                                                  @RequestParam(value = "limit", defaultValue = "10") Integer limit) {
+        Page<CompanyResponseDto> companies = companyService.getAllCompaniesWithPagination(page, limit);
+        return ResponseEntity.ok(companies);
     }
 
     @GetMapping("/{id}")

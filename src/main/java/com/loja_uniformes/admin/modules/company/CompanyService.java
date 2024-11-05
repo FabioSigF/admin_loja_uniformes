@@ -1,6 +1,8 @@
 package com.loja_uniformes.admin.modules.company;
 
 import com.loja_uniformes.admin.domain.dto.request.CompanyRequestDto;
+import com.loja_uniformes.admin.domain.dto.request.ProductFeatureRequestDto;
+import com.loja_uniformes.admin.domain.dto.request.ProductRequestDto;
 import com.loja_uniformes.admin.domain.entity.company.CompanyEntity;
 import com.loja_uniformes.admin.domain.dto.response.CompanyResponseDto;
 import com.loja_uniformes.admin.domain.entity.product.ProductEntity;
@@ -8,8 +10,12 @@ import com.loja_uniformes.admin.domain.enums.CompanyCategoryEnum;
 import com.loja_uniformes.admin.exceptions.EntityNotFoundException;
 import com.loja_uniformes.admin.modules.product.ProductService;
 import com.loja_uniformes.admin.repositories.CompanyRepository;
+import com.loja_uniformes.admin.utils.pagination.PageUtil;
 import com.loja_uniformes.admin.utils.validator.CnpjValidator;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -41,6 +47,14 @@ public class CompanyService {
         List<CompanyEntity> companies = companyRepository.findAllByDeletedFalse()
                 .orElseThrow(() -> new EntityNotFoundException("Nenhuma empresa encontrada."));
         return companies.stream().map(CompanyResponseDto::toCompanyResponseDto).toList();
+    }
+
+    public Page<CompanyResponseDto> getAllCompaniesWithPagination(Integer page, Integer limit) {
+        Pageable pageable = PageUtil.generatedPage(page, limit, Sort.Direction.ASC, "name");
+
+        Page<CompanyEntity> companies = companyRepository.findAllByDeletedFalse(pageable)
+                .orElseThrow(() -> new EntityNotFoundException("Nenhuma empresa encontrada."));
+        return companies.map(CompanyResponseDto::toCompanyResponseDto);
     }
 
     public List<CompanyResponseDto> getAllCompaniesByName(String name) {
@@ -81,13 +95,30 @@ public class CompanyService {
         company.setCnpj(companyDto.cnpj());
         company.setCategory(companyDto.category());
         company.setPhones(companyDto.phones());
-        company.setProducts(companyDto.products());
         company.setDeleted(false);
         Instant now = Instant.now();
         company.setCreatedAt(now);
         company.setUpdatedAt(now);
 
-        return companyRepository.save(company);
+        // Salva a empresa
+        CompanyEntity savedCompany = companyRepository.save(company);
+        companyRepository.flush(); // Força a persistência para garantir que o ID esteja disponível
+
+        // Adicionando os produtos da empresa
+        if (companyDto.products() != null && !companyDto.products().isEmpty()) {
+            companyDto.products().forEach(product -> {
+                ProductRequestDto productDto = new ProductRequestDto(
+                        savedCompany.getId(),
+                        product.name(),
+                        product.description(),
+                        product.gender(),
+                        product.features()
+                );
+                productService.saveProduct(productDto);
+            });
+        }
+
+        return savedCompany;
     }
 
     // DELETE METHOD
