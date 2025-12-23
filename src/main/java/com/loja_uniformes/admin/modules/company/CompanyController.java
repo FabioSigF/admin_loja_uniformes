@@ -7,10 +7,12 @@ import com.loja_uniformes.admin.domain.dto.response.CompanyResponseDto;
 import com.loja_uniformes.admin.domain.enums.CompanyCategoryEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,6 +51,27 @@ public class CompanyController {
     @GetMapping("/search-category/{category}")
     public ResponseEntity<List<CompanyResponseDto>> getAllCompaniesByCategory(@PathVariable CompanyCategoryEnum category) {
         return ResponseEntity.status(HttpStatus.OK).body(companyService.getAllCompaniesByCategory(category));
+    }
+
+    @GetMapping("/most-profitable-company")
+    public ResponseEntity<CompanyResponseDto> getMostProfitableCompanyByDateRange(
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+    ) {
+        return ResponseEntity.ok().body(companyService.getMostProfitableCompanyByDateRange(startDate, endDate));
+    }
+
+    @GetMapping("/amount")
+    public ResponseEntity<Integer> getAmountOfCompanies() {
+        return ResponseEntity.ok().body(companyService.getAmountOfCompany());
+    }
+
+    @GetMapping("/created-in-date-range")
+    public ResponseEntity<Integer> getAmountOfCompaniesCreatedInDateRange(
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+    ) {
+        return ResponseEntity.ok().body(companyService.getAmountOfCompaniesCreatedInDateRange(startDate, endDate));
     }
 
     @PostMapping

@@ -36,7 +36,7 @@ public class SaleController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SaleResponseDto> getSaleById(@PathVariable UUID id) {
+    public ResponseEntity<SaleResponseDto> getSaleById(@PathVariable String id) {
         return ResponseEntity.status(HttpStatus.OK).body(saleService.getSaleById(id));
     }
 
@@ -55,6 +55,14 @@ public class SaleController {
             @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         return ResponseEntity.status(HttpStatus.OK).body(saleService.getAllSalesByDateRange(startDate, endDate));
+    }
+
+    @GetMapping("/amount-in-date-range")
+    public ResponseEntity<Integer> getAmountOfSalesByDateRange(
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+    ) {
+        return ResponseEntity.ok(saleService.getAmountOfSalesByDateRange(startDate, endDate));
     }
 
     @GetMapping("/company/{id}")
@@ -86,7 +94,7 @@ public class SaleController {
     }
 
     @PatchMapping("/delete/{id}")
-    public ResponseEntity<String> deleteSale(@PathVariable UUID id) {
+    public ResponseEntity<String> deleteSale(@PathVariable String id) {
         saleService.deleteSale(id);
         return ResponseEntity.status(HttpStatus.OK).body("Venda deletada com sucesso.");
     }

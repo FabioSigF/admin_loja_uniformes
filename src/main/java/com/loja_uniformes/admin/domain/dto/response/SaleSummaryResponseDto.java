@@ -8,7 +8,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public record SaleSummaryResponseDto(
-        UUID id,
+        String id,
         UUID companyId,
         Instant createdAt,
         Instant updatedAt,

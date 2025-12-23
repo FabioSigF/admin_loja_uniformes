@@ -24,7 +24,7 @@ public interface SaleRepository extends JpaRepository<SaleEntity, UUID> {
 
     Optional<List<SaleEntity>> findAllByCompanyIdAndCreatedAtBetweenAndDeletedFalse(UUID companyId, Instant startDate, Instant endDate);
 
-    Optional<SaleEntity> findOneByIdAndDeletedFalse(UUID id);
+    Optional<SaleEntity> findOneByIdAndDeletedFalse(String id);
 
     Optional<List<SaleEntity>> findAllByCompanyCategoryAndCreatedAtBetweenAndDeletedFalse(CompanyCategoryEnum category, Instant startDate, Instant endDate);
 }

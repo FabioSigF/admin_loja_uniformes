@@ -2,6 +2,8 @@ package com.loja_uniformes.admin.domain.entity.sale;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.loja_uniformes.admin.domain.entity.company.CompanyEntity;
+import com.loja_uniformes.admin.domain.enums.SaleStatusEnum;
+import com.loja_uniformes.admin.utils.RandomIDGenerator;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,13 +30,16 @@ public class SaleEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private String id = RandomIDGenerator.generateRandomID(5);
 
-    @Column(name = "created_at")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private SaleStatusEnum status;
+
+    @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
     @Column(name = "deleted", nullable = false)
@@ -47,7 +52,7 @@ public class SaleEntity implements Serializable {
     private CompanyEntity company;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @OneToMany(mappedBy = "sale", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "sale", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<SaleItemEntity> saleItems = new HashSet<>();
 
 }

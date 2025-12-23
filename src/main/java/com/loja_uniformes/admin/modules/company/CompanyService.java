@@ -3,12 +3,14 @@ package com.loja_uniformes.admin.modules.company;
 import com.loja_uniformes.admin.domain.dto.request.CompanyRequestDto;
 import com.loja_uniformes.admin.domain.dto.request.ProductFeatureRequestDto;
 import com.loja_uniformes.admin.domain.dto.request.ProductRequestDto;
+import com.loja_uniformes.admin.domain.dto.response.SaleResponseDto;
 import com.loja_uniformes.admin.domain.entity.company.CompanyEntity;
 import com.loja_uniformes.admin.domain.dto.response.CompanyResponseDto;
 import com.loja_uniformes.admin.domain.entity.product.ProductEntity;
 import com.loja_uniformes.admin.domain.enums.CompanyCategoryEnum;
 import com.loja_uniformes.admin.exceptions.EntityNotFoundException;
 import com.loja_uniformes.admin.modules.product.ProductService;
+import com.loja_uniformes.admin.modules.sale.SaleService;
 import com.loja_uniformes.admin.repositories.CompanyRepository;
 import com.loja_uniformes.admin.utils.pagination.PageUtil;
 import com.loja_uniformes.admin.utils.validator.CnpjValidator;
@@ -19,6 +21,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -29,10 +33,12 @@ public class CompanyService {
 
     private final CompanyRepository companyRepository;
     private final ProductService productService;
+    private final SaleService saleService;
 
-    public CompanyService(CompanyRepository companyRepository, ProductService productService) {
+    public CompanyService(CompanyRepository companyRepository, ProductService productService, SaleService saleService) {
         this.companyRepository = companyRepository;
         this.productService = productService;
+        this.saleService = saleService;
     }
 
     // GET METHODS
@@ -69,6 +75,44 @@ public class CompanyService {
         return companies.stream().map(CompanyResponseDto::toCompanyResponseDto).toList();
     }
 
+    public CompanyResponseDto getMostProfitableCompanyByDateRange(LocalDate startDate, LocalDate endDate) {
+        List<CompanyEntity> companies = companyRepository.findAllByDeletedFalse()
+                .orElseThrow(() -> new EntityNotFoundException("Nenhuma empresa encontrada."));
+
+        CompanyEntity mostProfitableCompany = null;
+        double highestProfit = 0.0;
+
+        for (CompanyEntity company : companies) {
+            List<SaleResponseDto> companySales = saleService.getAllSalesByCompanyIdAndDateRange(company.getId(), startDate, endDate);
+            double totalProfit = companySales.stream().mapToDouble(SaleResponseDto::totalPrice).sum();
+
+            if (totalProfit > highestProfit) {
+                highestProfit = totalProfit;
+                mostProfitableCompany = company;
+            }
+        }
+
+        if (mostProfitableCompany == null) {
+            throw new EntityNotFoundException("Nenhuma empresa registrou lucro no período informado.");
+        }
+
+        return CompanyResponseDto.toCompanyResponseDto(mostProfitableCompany);
+    }
+
+    public Integer getAmountOfCompany(){
+        List<CompanyEntity> companies = companyRepository.findAllByDeletedFalse()
+                .orElseThrow(() -> new EntityNotFoundException("Nenhuma empresa cadastrada."));
+        return companies.size();
+    }
+
+    public Integer getAmountOfCompaniesCreatedInDateRange(LocalDate startDate, LocalDate endDate) {
+        Instant startInstant = startDate.atStartOfDay(ZoneOffset.UTC).toInstant();
+        Instant endInstant = endDate.atTime(23, 59, 59).atZone(ZoneOffset.UTC).toInstant();
+
+        List<CompanyEntity> companies = companyRepository.findAllByDeletedFalseAndCreatedAtBetween(startInstant, endInstant)
+                .orElseThrow(() -> new EntityNotFoundException("Nenhuma empresa cadastrada nesse período."));
+        return companies.size();
+    }
     // POST METHODS
     @Transactional
     public CompanyEntity saveCompany(CompanyRequestDto companyDto) {

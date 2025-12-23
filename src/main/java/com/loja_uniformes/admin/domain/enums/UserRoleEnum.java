@@ -4,10 +4,10 @@ public enum UserRoleEnum {
     ADMIN("administrador"),
     USER("usuário");
 
-    private final String descripton;
+    private final String description;
 
 
-    UserRoleEnum(String descripton) {
-        this.descripton = descripton;
+    UserRoleEnum(String description) {
+        this.description = description;
     }
 }

@@ -2,17 +2,16 @@ package com.loja_uniformes.admin.domain.dto.response;
 
 import com.loja_uniformes.admin.domain.entity.sale.SaleEntity;
 import com.loja_uniformes.admin.domain.entity.sale.SaleItemEntity;
-import com.loja_uniformes.admin.modules.company.CompanyService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.loja_uniformes.admin.domain.enums.SaleStatusEnum;
 
 import java.time.Instant;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public record SaleResponseDto(
-        UUID id,
+        String id,
         CompanySummaryResponseDto company,
+        SaleStatusEnum status,
         Instant createdAt,
         Instant updatedAt,
         Boolean deleted,
@@ -30,6 +29,7 @@ public record SaleResponseDto(
         return new SaleResponseDto(
                 sale.getId(),
                 CompanySummaryResponseDto.toCompanySummaryDto(sale.getCompany()),
+                sale.getStatus(),
                 sale.getCreatedAt(),
                 sale.getUpdatedAt(),
                 sale.getDeleted(),

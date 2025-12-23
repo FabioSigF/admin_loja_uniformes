@@ -13,6 +13,7 @@ import com.loja_uniformes.admin.modules.product.ProductFeatureService;
 import com.loja_uniformes.admin.repositories.CompanyRepository;
 import com.loja_uniformes.admin.repositories.ProductFeatureRepository;
 import com.loja_uniformes.admin.repositories.SaleRepository;
+import com.loja_uniformes.admin.utils.RandomIDGenerator;
 import com.loja_uniformes.admin.utils.pagination.PageUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -62,7 +64,7 @@ public class SaleService {
         return sales.stream().map(SaleResponseDto::toSaleResponseDto).toList();
     }
 
-    public SaleResponseDto getSaleById(UUID id) {
+    public SaleResponseDto getSaleById(String id) {
         SaleEntity sale = saleRepository.findOneByIdAndDeletedFalse(id).
                 orElseThrow(() -> new EntityNotFoundException("Nenhuma venda encontrada com o id fornecido."));
         return SaleResponseDto.toSaleResponseDto(sale);
@@ -75,6 +77,15 @@ public class SaleService {
         List<SaleEntity> sales = saleRepository.findAllByCreatedAtBetweenAndDeletedFalse(startInstant, endInstant).
                 orElseThrow(() -> new EntityNotFoundException("Nenhuma venda encontrada durante essas datas."));
         return sales.stream().map(SaleResponseDto::toSaleResponseDto).toList();
+    }
+
+    public Integer getAmountOfSalesByDateRange(LocalDate startDate, LocalDate endDate) {
+        Instant startInstant = startDate.atStartOfDay(ZoneOffset.UTC).toInstant();
+        Instant endInstant = endDate.atTime(23, 59, 59).atZone(ZoneOffset.UTC).toInstant();
+
+        List<SaleEntity> sales = saleRepository.findAllByCreatedAtBetweenAndDeletedFalse(startInstant, endInstant).
+                orElseThrow(() -> new EntityNotFoundException("Nenhuma venda encontrada durante essas datas."));
+        return sales.size();
     }
 
     public Page<SaleResponseDto> getAllSalesByDateRangeWithPagination(LocalDate startDate, LocalDate endDate, Integer page, Integer limit) {
@@ -137,7 +148,6 @@ public class SaleService {
 
         if (saleDto.saleItems() == null || saleDto.saleItems().isEmpty())
             throw new IllegalArgumentException("Não é possível realizar uma venda sem itens no carrinho.");
-        ;
 
         SaleEntity sale = new SaleEntity();
 
@@ -145,6 +155,7 @@ public class SaleService {
         sale.setCreatedAt(now);
         sale.setUpdatedAt(now);
         sale.setCompany(companyOpt.get());
+        sale.setStatus(saleDto.status());
 
         // Salva a venda
         SaleEntity savedSale = saleRepository.save(sale);
@@ -183,7 +194,7 @@ public class SaleService {
 
     // DELETE METHOD
     @Transactional
-    public void deleteSale(UUID id) {
+    public void deleteSale(String id) {
         Optional<SaleEntity> saleOpt = saleRepository.findOneByIdAndDeletedFalse(id);
 
         if (saleOpt.isEmpty()) {
